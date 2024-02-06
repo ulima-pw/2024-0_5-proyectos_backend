@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 usuarios = """
@@ -132,3 +133,32 @@ def loginEndpoint(request, username, password):
                 "msg" : "Error en el login"
             }
             return HttpResponse(json.dumps(respuesta))
+
+# Path: /proyectos/login POST
+
+@csrf_exempt
+def loginPostEndpoint(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        listaUsuarios = json.loads(usuarios)
+        listaUsuariosFiltrada = list(
+            filter( 
+                lambda x : x["username"] == username and x["password"] == password,
+                listaUsuarios
+            )
+        )
+
+        if len(listaUsuariosFiltrada) > 0 :
+            respuesta = {
+                "msg" : ""
+            }
+            return HttpResponse(json.dumps(respuesta))
+        else :
+            respuesta = {
+                "msg" : "Error en el login"
+            }
+            return HttpResponse(json.dumps(respuesta))
+
+
