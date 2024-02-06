@@ -2,6 +2,23 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import json
 
+usuarios = """
+[
+    {
+        "username" : "usuario1",
+        "password" : "123"
+    },
+    {
+        "username" : "usuario2",
+        "password" : "abc"
+    },
+    {
+        "username" : "usuario3",
+        "password" : "aaa"
+    }
+]
+"""
+
 equipos = """
 [
     {
@@ -82,3 +99,36 @@ def verEquiposPathParametersEndpoint(request, filtro):
 
 
     return HttpResponse(equipos)
+
+
+# Path: /proyectos/login GET
+# Response:
+# {
+#    "msg" : "" // Login Correcto
+# }
+
+# {
+#    "msg" : "Error en login" // Login Incorrecto
+# }
+
+def loginEndpoint(request, username, password):
+    if request.method == "GET":
+        # Peticion GET
+        listaUsuarios = json.loads(usuarios)
+        listaUsuariosFiltrada = list(
+            filter( 
+                lambda x : x["username"] == username and x["password"] == password,
+                listaUsuarios
+            )
+        )
+
+        if len(listaUsuariosFiltrada) > 0 :
+            respuesta = {
+                "msg" : ""
+            }
+            return HttpResponse(json.dumps(respuesta))
+        else :
+            respuesta = {
+                "msg" : "Error en el login"
+            }
+            return HttpResponse(json.dumps(respuesta))
