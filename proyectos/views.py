@@ -161,4 +161,42 @@ def loginPostEndpoint(request):
             }
             return HttpResponse(json.dumps(respuesta))
 
+#Path: /login-json
+#Request:
+#{
+#    "username" : "usuario1",
+#    "password" : "123"
+#}
+
+#Response:
+#{
+#   "msg": ""
+#}
+
+@csrf_exempt
+def loginPostJsonEndpoint(request):
+    if request.method == "POST":
+        data = request.body
+        usernameData = json.loads(data)
+
+        listaUsuarios = json.loads(usuarios)
+        listaUsuariosFiltrada = list(
+            filter( 
+                lambda x : x["username"] == usernameData["username"] and x["password"] == usernameData["password"],
+                listaUsuarios
+            )
+        )
+
+        if len(listaUsuariosFiltrada) > 0 :
+            respuesta = {
+                "msg" : ""
+            }
+            return HttpResponse(json.dumps(respuesta))
+        else :
+            respuesta = {
+                "msg" : "Error en el login"
+            }
+            return HttpResponse(json.dumps(respuesta))
+
+
 
