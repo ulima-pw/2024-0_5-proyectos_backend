@@ -3,27 +3,28 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from proyectos.models import Usuario
+from proyectos.models import Equipo, Usuario
 
 def verEquiposEndpoint(request):
     if request.method == "GET":
         # Es una peticion de tipo GET
         nombreFiltro = request.GET.get("nombre") # Obtenemos query parameter nombre
 
-        ##def filtro(equipo) :
-        ##    return equipo["nombre"].lower() == nombreFiltro
+        if nombreFiltro == "":
+            # No hay que filtrar nada
+            listaEquiposFiltrada = Equipo.objects.all()
+        else:
+            # Si ha enviado filtro
+            listaEquiposFiltrada = Equipo.objects.filter(nombre__contains=nombreFiltro)
 
-        listaEquipos = json.loads(equipos)
-        listaEquiposFiltrada = list(
-            filter(
-                lambda x : x["nombre"].lower() == nombreFiltro, 
-                listaEquipos
-            )
-        )
-        return HttpResponse(json.dumps(listaEquiposFiltrada))
+        dataResponse = []
+        for equipo in listaEquiposFiltrada:
+            dataResponse.append({
+                "nombre" : equipo.nombre,
+                "integrantes" : []
+            })
 
-
-    return HttpResponse(equipos)
+        return HttpResponse(json.dumps(dataResponse))
 
 # def verEquiposPathParametersEndpoint(request, filtro):
 #     if request.method == "GET":
