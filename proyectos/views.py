@@ -153,9 +153,9 @@ def registrarEquipo(request):
         data = request.body
         equipoDict = json.loads(data)
 
-        if equipoDict["nombre"] == "" and equipoDict["anho"] == "":
+        if equipoDict["nombre"] == "" or equipoDict["anho"] == "":
             errorDict = {
-                "msg" : "Debe ingresar un nombre de equipo"
+                "msg" : "Debe ingresar los datos completo de equipo"
             }
             return HttpResponse(json.dumps(errorDict))
 
