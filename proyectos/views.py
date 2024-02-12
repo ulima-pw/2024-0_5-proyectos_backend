@@ -204,3 +204,45 @@ def eliminarEquipo(request):
         }
         return HttpResponse(json.dumps(msgDict))
 
+# Path /proyectos/ver-equipo?id=1 GET
+# Request: Query parameter
+# Response:
+# {
+#    "id" : 1,
+#    "nombre" : "23232",
+#    "anho" : "2023",
+#    "estado" : "A",
+#    "integrantes" : [],
+#    "msg" : "" | "msg" : "Hubo un error bla bla"
+# } 
+def verEquipo(request):
+    if request.method == "GET":
+        equipoId = request.GET.get("id")
+
+        if equipoId == "":
+            errorDict = {
+                "msg" : "Debe enviar un id de equipo"
+            }
+            return HttpResponse(json.dumps(errorDict))
+        
+        try:
+            equipo = Equipo.objects.get(pk=equipoId)
+        except:
+            errorDict = {
+                "msg" : "Debe enviar un id de equipo que exista"
+            }
+            return HttpResponse(json.dumps(errorDict))
+        
+        respDict = {
+            "id" : equipo.pk,
+            "nombre" : equipo.nombre,
+            "anho" : equipo.anho,
+            "estado" : equipo.estado,
+            "integrantes" : [],
+            "msg" : ""
+        }
+        return HttpResponse(json.dumps(respDict))
+
+def modificarEquipo(request):
+    pass
+
