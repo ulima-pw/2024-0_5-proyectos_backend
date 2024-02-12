@@ -21,6 +21,7 @@ def verEquiposEndpoint(request):
         dataResponse = []
         for equipo in listaEquiposFiltrada:
             dataResponse.append({
+                "id" : equipo.pk,
                 "nombre" : equipo.nombre,
                 "integrantes" : []
             })
@@ -172,4 +173,34 @@ def registrarEquipo(request):
         return HttpResponse(json.dumps(respDict))
 
 
+# Path: /proyectos/eliminar-equipo?id=3 GET
+# Request: Query parameter
+# Reponse:
+# {
+#    "msg" : "" | "msg" : "Error eliminando equipo"
+# }
+def eliminarEquipo(request):
+    if request.method == "GET":
+        equipoId = request.GET.get("id")
+
+        if equipoId == "":
+            errorDict = {
+                "msg" : "Debe enviar un id de equipo"
+            }
+            return HttpResponse(json.dumps(errorDict))
+        
+        try:
+            equipo = Equipo.objects.get(pk=equipoId)
+        except:
+            errorDict = {
+                "msg" : "Debe enviar un id de equipo existente "
+            }
+            return HttpResponse(json.dumps(errorDict))
+            
+        equipo.delete()
+
+        msgDict = {
+            "msg" : ""
+        }
+        return HttpResponse(json.dumps(msgDict))
 
