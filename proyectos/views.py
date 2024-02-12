@@ -136,4 +136,40 @@ def loginPostJsonEndpoint(request):
             return HttpResponse(json.dumps(respuesta))
 
 
+# Path: /proyectos/equipo POST
+# Description: Este endpoint se encargara de registrar un nuevo equipo
+# Request:
+# {
+#    "nombre" : "Equipo A",
+#    "anho" : "2024"
+# }
+# Response
+# {
+#    "msg" : ""  | "msg" : "Hubo un error bla bla..."
+# }
+@csrf_exempt
+def registrarEquipo(request):
+    if request.method == "POST":
+        data = request.body
+        equipoDict = json.loads(data)
+
+        if equipoDict["nombre"] == "" and equipoDict["anho"] == "":
+            errorDict = {
+                "msg" : "Debe ingresar un nombre de equipo"
+            }
+            return HttpResponse(json.dumps(errorDict))
+
+        equipo = Equipo(
+            nombre=equipoDict["nombre"], 
+            anho=equipoDict["anho"], 
+            estado="A"
+        )
+        equipo.save()
+
+        respDict = {
+            "msg" : ""
+        }
+        return HttpResponse(json.dumps(respDict))
+
+
 
