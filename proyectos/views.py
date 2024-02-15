@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from proyectos.models import Equipo, Usuario
+from proyectos.models import Equipo, Usuario, Integrante
 
 def verEquiposEndpoint(request):
     if request.method == "GET":
@@ -20,10 +20,15 @@ def verEquiposEndpoint(request):
 
         dataResponse = []
         for equipo in listaEquiposFiltrada:
+            listaIntegrantesQuerySet = Integrante.objects.filter(equipo_id = equipo.pk) # QuerySet
+            listaIntegrantes = list(listaIntegrantesQuerySet.values())
+            print('1 +++++++++++++++++++++++++++++++++++++')
+            print(listaIntegrantesQuerySet)
+            print(listaIntegrantes)
             dataResponse.append({
                 "id" : equipo.pk,
                 "nombre" : equipo.nombre,
-                "integrantes" : []
+                "integrantes" : listaIntegrantes
             })
 
         return HttpResponse(json.dumps(dataResponse))
@@ -159,14 +164,24 @@ def registrarEquipo(request):
                 "msg" : "Debe ingresar los datos completo de equipo"
             }
             return HttpResponse(json.dumps(errorDict))
-
+    
+        # insert equipo
         equipo = Equipo(
             nombre=equipoDict["nombre"], 
             anho=equipoDict["anho"], 
             estado="A"
         )
         equipo.save()
-
+        # print(equipo.id)
+        # insert integrantes
+        integrantes = equipoDict['integrantes']  
+        for d in integrantes:
+            integrante = Integrante(
+                codigo = d['codigo'],
+                nombre = d['nombre'],
+                equipo = equipo
+            )
+            integrante.save()
         respDict = {
             "msg" : ""
         }

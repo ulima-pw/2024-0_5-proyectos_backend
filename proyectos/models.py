@@ -20,3 +20,9 @@ class Equipo(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Integrante(models.Model):
+    codigo = models.IntegerField()
+    nombre = models.CharField(max_length=40)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
+    
