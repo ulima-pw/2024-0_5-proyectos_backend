@@ -242,6 +242,7 @@ def eliminarEquipo(request):
 #    "anho" : "2023",
 #    "estado" : "A",
 #    "integrantes" : [],
+#    "cursos" : [1, 2, 4]
 #    "msg" : "" | "msg" : "Hubo un error bla bla"
 # } 
 def verEquipo(request):
@@ -268,6 +269,7 @@ def verEquipo(request):
             "anho" : equipo.anho,
             "estado" : equipo.estado,
             "integrantes" : [],
+            "cursos" : [],
             "msg" : ""
         }
         return HttpResponse(json.dumps(respDict))
@@ -310,4 +312,17 @@ def verCursosDisponibles(request):
             return HttpResponse(json.dumps(respDict))
         else:
             # Devolver los cursos que estan disponibles
-            pass
+
+            # 1. Obtener los ids de cursos que el equipo esta registrado
+            equipoXCursoRegistrados = EquipoXCurso.objects.filter(equipo__pk = idEquipo)
+            idcursosRegistrados = [ exc.curso.pk for exc in equipoXCursoRegistrados ]
+            
+            #2. Excluir cursos qe se encuentran registrados
+            cursosDisponibles = Curso.objects.exclude(pk__in=idcursosRegistrados)
+
+            cursosDisponiblesDict = [{ "id" : curso.pk, "nombre" : curso.nombre } for curso in cursosDisponibles] 
+            respDict = {
+                "msg" : "",
+                "cursos" : cursosDisponiblesDict
+            }
+            return HttpResponse(json.dumps(respDict))
