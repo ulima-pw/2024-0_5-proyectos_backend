@@ -275,3 +275,39 @@ def verEquipo(request):
 def modificarEquipo(request):
     pass
 
+# Path /proyectos/ver-cursos?idequipo=1
+# Request:  Query parameter
+# Response:
+# {
+#    msg : "" | "msg" : "Hubo un error en el query",
+#    cursos : [
+#        { "id" : 1, "nombre": "Progra Web"},
+#        ...
+#    ]
+# }
+def verCursosDisponibles(request):
+    if request.method == "GET":
+        idEquipo = request.GET.get("idequipo")
+
+        if idEquipo == None:
+            # Devolver todos los cursos
+            cursos = Curso.objects.all()
+
+            # list comprehension
+            cursosDict = [{ "id" : curso.pk, "nombre" : curso.nombre } for curso in cursos]
+
+            # cursosDict = []
+            # for curso in cursos:
+            #     cursosDict.append({
+            #         "id" : curso.pk,
+            #         "nombre" :curso.nombre
+            #     })
+
+            respDict = {
+                "msg" : "",
+                "cursos" : cursosDict
+            }
+            return HttpResponse(json.dumps(respDict))
+        else:
+            # Devolver los cursos que estan disponibles
+            pass

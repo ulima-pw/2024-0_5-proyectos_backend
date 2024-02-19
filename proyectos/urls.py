@@ -5,6 +5,7 @@ from .views import loginPostJsonEndpoint
 from .views import registrarEquipo
 from .views import eliminarEquipo
 from .views import verEquipo
+from .views import verCursosDisponibles
 
 urlpatterns = [
     path("ver-equipos", verEquiposEndpoint),
@@ -14,5 +15,6 @@ urlpatterns = [
     path("login-json", loginPostJsonEndpoint),
     path("equipo", registrarEquipo),
     path("eliminar-equipo", eliminarEquipo),
-    path("ver-equipo", verEquipo)
+    path("ver-equipo", verEquipo),
+    path("ver-cursos", verCursosDisponibles)
 ]
