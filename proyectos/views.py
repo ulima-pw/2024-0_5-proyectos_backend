@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from proyectos.models import Equipo, Usuario, Integrante
+from proyectos.models import Equipo, Usuario, Integrante, Curso, EquipoXCurso
 
 def verEquiposEndpoint(request):
     if request.method == "GET":
@@ -147,7 +147,9 @@ def loginPostJsonEndpoint(request):
 # Request:
 # {
 #    "nombre" : "Equipo A",
-#    "anho" : "2024"
+#    "anho" : "2024",
+#    "integrantes" : [ ... ],
+#    "cursos" : [1,5]
 # }
 # Response
 # {
@@ -172,8 +174,8 @@ def registrarEquipo(request):
             estado="A"
         )
         equipo.save()
-        # print(equipo.id)
-        # insert integrantes
+        
+        # Agregando integrantes
         integrantes = equipoDict['integrantes']  
         for d in integrantes:
             integrante = Integrante(
@@ -182,6 +184,18 @@ def registrarEquipo(request):
                 equipo = equipo
             )
             integrante.save()
+
+        # Relacionando con cursos
+        cursos = equipoDict['cursos']
+        for cursoId in cursos:
+            curso = Curso.objects.get(pk=cursoId)
+            equipoXCurso = EquipoXCurso(
+                curso = curso,
+                equipo = equipo
+            )
+            equipoXCurso.save()
+
+
         respDict = {
             "msg" : ""
         }
