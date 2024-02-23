@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,7 +53,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
+    os.environ['CORS_ALLOWED_1']
 ]
 
 ROOT_URLCONF = 'proyectos_backend.urls'
@@ -83,11 +83,11 @@ WSGI_APPLICATION = 'proyectos_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'proyectosdb',
-        'USER' : 'proyectos',
-        'PASSWORD' : 'proyectos',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432'
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER' : os.environ['DATABASE_USER'],
+        'PASSWORD' : os.environ['DATABASE_PASSWORD'],
+        'HOST' : os.environ['DATABASE_HOST'],
+        'PORT' : os.environ['DATABASE_PORT']
     }
 }
 
